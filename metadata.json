@@ -1,0 +1,6 @@
+{
+  "name": "VAI Boost & Clean",
+  "description": "High-performance developer workspace, design specifications, architecture schemas, and interactive simulators for the Android cache and network optimizer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
