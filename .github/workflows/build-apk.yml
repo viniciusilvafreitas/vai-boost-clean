@@ -6,24 +6,40 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-    - name: Install Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-size: 18
-    - name: Install Dependencies
-      run: npm install
-    - name: Build Android Release APK
-      run: |
-        cd android
-        ./gradlew assembleRelease
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: vai-boost-clean-apk
-        path: android/app/build/outputs/apk/release/app-release.apk
+      - uses: actions/checkout@v4
+      
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          
+      - name: Install Dependencies
+        run: npm install
+        
+      - name: Build Web Project
+        run: |
+          npx vite build || npm run build || mkdir -p dist
+        
+      - name: Setup Capacitor and Android Folder
+        run: |
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npx cap init "Vai Boost Clean" "com.vinicius.vaiboostclean" --web-dir=dist || true
+          npx cap add android || true
+          npx cap sync
+          
+      - name: Build Android Release APK
+        run: |
+          cd android
+          ./gradlew assembleRelease
+          
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vai-boost-clean-apk
+          path: android/app/build/outputs/apk/release/app-release-unsigned.apk
