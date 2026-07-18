@@ -24,18 +24,18 @@ jobs:
         
       - name: Build Web Project
         run: |
-          # Executa o build do projeto web para gerar a pasta dist/build
           npm run build
         
       - name: Setup Capacitor and Android Folder
         run: |
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          
-          # Garante o arquivo de configuração do Capacitor
           npx cap init "Vai Boost Clean" "com.vinicius.vaiboostclean" --web-dir=dist || true
-          
-          # Adiciona e sincroniza a plataforma Android
           npx cap add android || true
+          
+          # 🛠️ INJEÇÃO DA CORREÇÃO DO KOTLIN:
+          # Esse trecho entra no arquivo do Gradle e força a unificação das versões duplicadas
+          echo -e "\nsubprojects {\n    project.configurations.all {\n        resolutionStrategy.eachDependency { details ->\n            if (details.requested.group == 'org.jetbrains.kotlin' && details.requested.name.startsWith('kotlin-stdlib')) {\n                details.useVersion '1.8.22'\n            }\n        }\n    }\n}" >> android/build.gradle
+          
           npx cap sync
           
       - name: Build Android Release APK
